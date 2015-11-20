@@ -1,5 +1,9 @@
 package epl_v3
 
+/**
+  * Created by Tërnava.
+  */
+
 sealed trait Expr 
 case class Lit(n: Int) extends Expr
 case class Add(l: Expr, r: Expr) extends Expr

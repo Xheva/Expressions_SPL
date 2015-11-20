@@ -1,5 +1,9 @@
 package epl
 
+/**
+  * Created by Tërnava.
+  */
+
 // Initial object algebra interface for expressions: integers and addition
 trait ExpAlg[E] {
   def lit(x: Int): E

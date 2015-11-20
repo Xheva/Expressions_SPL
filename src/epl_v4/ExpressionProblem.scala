@@ -1,21 +1,23 @@
-package epl_v2
+package epl_v4
 
 /**
   * Created by Tërnava.
   */
 
-class Operations
+/*Base definitions*/
+trait Operations {
+  def print(): String
+}
 
-/*Base definition*/
 trait ExpAlg {
   type Opr <: Operations
   def lit(x: Int): Opr
 }
 
 /* Extension 1*/
-trait PPrint extends Operations {
+/*trait PPrint extends Operations {
   def print(): String
-}
+} */
 
 /* Extension 2*/
 trait Eval extends Operations {
@@ -38,9 +40,9 @@ trait SubExpAlg extends ExpAlg {
  * Feature "Print" for "Lit"
  *  */
 trait PrintExpAlg extends ExpAlg {
-  type Opr = PPrint
-  def lit(x: Int) = new PPrint() {
-    def print() = x.toString()
+  type Opr = Operations
+  def lit(x: Int) = new Operations {
+    override def print(): String = x.toString()
   }
 }
 
@@ -82,7 +84,7 @@ trait EvalSubExpAlg extends EvalExpAlg with SubExpAlg {
   }
 }
 
-/* Mandatory features ("Lit" and "Print")  
+/* Mandatory features ("Lit" and "Print")
  * are shown as defaults in a "Base" type
  */
 trait Base extends PrintExpAlg
@@ -110,16 +112,16 @@ object ExpressionProblem {
       val l = lit(5)
       add(l, l).print()
     }
-    
+
     new PrintSubExpAlg {
 
     }
   }
-    
+
   val eb = new EvalBase
 
- println(cr)
-  
+  println(cr)
+
   //println(cr)
 
   //else---------------------------
@@ -131,7 +133,7 @@ object ExpressionProblem {
   object Base extends Base
   val in = Base lit 10 print ()
 
- // val basewithadd = new Core with PrintAddExpAlg -------------------------------
+  // val basewithadd = new Core with PrintAddExpAlg -------------------------------
   //println(basewithadd.add(basewithadd.lit(15), basewithadd.lit(15)).print())----
 
   //else---------------------------
@@ -158,3 +160,4 @@ object ExpressionProblem {
   }
 
 }
+
