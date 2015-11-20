@@ -127,8 +127,8 @@ object ExpressionProblem {
   object Base extends Base
   val in = Base lit 10 print ()
 
-  val basewithadd = new Core with PrintAddExpAlg //
-  println(basewithadd.add(basewithadd.lit(15), basewithadd.lit(15)).print()) //
+ // val basewithadd = new Core with PrintAddExpAlg -------------------------------
+  //println(basewithadd.add(basewithadd.lit(15), basewithadd.lit(15)).print())----
 
   //else---------------------------
   class EvalAddExpAlgC extends EvalAddExpAlg with EvalSubExpAlg
