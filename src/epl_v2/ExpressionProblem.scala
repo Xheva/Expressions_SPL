@@ -3,13 +3,13 @@ package epl_v2
 /**
   * Created by Tërnava.
   */
-
+//VP_A
 class Operations
 
 /*Base definition*/
 // VP_B
 trait ExpAlg {
-  type Opr <: Operations //VP_A
+  type Opr <: Operations
   def lit(x: Int): Opr
 }
 
