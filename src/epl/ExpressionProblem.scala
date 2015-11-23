@@ -3,112 +3,79 @@ package epl
 /**
   * Created by Tërnava.
   */
-
-// Initial object algebra interface for expressions: integers and addition
+// Base interface
 trait ExpAlg[E] {
   def lit(x: Int): E
-  def add(e1: E, e2: E): E
 }
 
-// An object algebra implementing that interface (evaluation)
+// Evolution A: Adding pretty printing
+trait Echo {
+  def print(): String
+}
 
-// The evaluation interface
+trait PrintExpAlg extends ExpAlg[Echo] {
+  def lit(x: Int) = new Echo() {
+    def print() = x.toString()
+  }
+}
+
+// Evolution 1: Adding subtraction
+trait AddExpAlg[E] extends ExpAlg[E] {
+  def add(e1: E, e2: E): E
+}
+// Evolution 2: Adding adding
+trait SubExpAlg[E] extends ExpAlg[E] {
+  def sub(e1: E, e2: E): E
+}
+// Updating evaluations:
+trait PrintAddExpAlg extends PrintExpAlg with AddExpAlg[Echo] {
+  def add(e1: Echo, e2: Echo) = new Echo {
+    def print() = e1.print() + "+" + e2.print()
+  }
+}
+trait PrintSubExpAlg extends PrintExpAlg with SubExpAlg[Echo] {
+  def sub(e1: Echo, e2: Echo) = new Echo() {
+    def print() = e1.print() + "-" + e2.print()
+  }
+}
+
+// Evolution 2: The evaluation interface
 trait Eval {
   def eval(): Int
 }
-
-// The object algebra
-trait EvalExpAlg extends ExpAlg[Eval] {
+// Updating evaluation:
+trait EvalExpAlg extends SubExpAlg[Eval] with AddExpAlg[Eval] {
   def lit(x: Int) = new Eval() {
     def eval() = x
   }
 
   def add(e1: Eval, e2: Eval) = new Eval() {
-    def eval() = e1.eval() + e2.eval()
+    def eval() = e1.eval() +  e2.eval()
   }
-}
 
-// Evolution 1: Adding subtraction
-trait SubExpAlg[E] extends ExpAlg[E] {
-  def sub(e1: E, e2: E): E
-}
-
-// Updating evaluation:
-trait EvalSubExpAlg extends EvalExpAlg with SubExpAlg[Eval] {
   def sub(e1: Eval, e2: Eval) = new Eval() {
     def eval() = e1.eval() - e2.eval()
   }
 }
 
-// Evolution 2: Adding pretty printing
-trait PPrint {
-  def print(): String
-}
+/* An alternative implementation
+** of pretty printing that directly computes a string */
 
-trait PrintExpAlg extends SubExpAlg[PPrint] {
-  def lit(x: Int) = new PPrint() {
-    def print() = x.toString()
-  }
-
-  def add(e1: PPrint, e2: PPrint) = new PPrint() {
-    def print() = e1.print() + " + " + e2.print()
-  }
-
-  def sub(e1: PPrint, e2: PPrint) = new PPrint() {
-    def print() = e1.print() + " - " + e2.print();
-  }
-}
-
-// An alternative object algebra for pretty printing:
-
-// Often, when precise control over the invocation of 
-// methods is not needed, we can simplify object algebras. 
-// For example, here's an alternative implementation 
-// of pretty printing that directly computes a string:
-
-trait PrintExpAlg2 extends SubExpAlg[String] {
+trait PrintExpAlg2 extends SubExpAlg[String]{
   def lit(x: Int) = x.toString()
-
   def add(e1: String, e2: String) = e1 + " + " + e2
-
   def sub(e1: String, e2: String) = e1 + " - " + e2
 }
 
+// Test
 object ExpressionProblem {
-
-  // Testing
-  // An expression using the basic ExpAlg
-  def exp1[E](alg: ExpAlg[E]) = {
-    import alg._
-    add(lit(3), lit(4))
-  }
-
-  // An expression using subtraction too
-  def exp2[E](alg: SubExpAlg[E]) = {
-    import alg._
-    sub(exp1(alg), lit(4))
-  }
-
   def test(): Unit = {
-    // Some object algebras:
     val ea = new EvalExpAlg() {}
-    val esa = new EvalSubExpAlg() {}
-    val pa = new PrintExpAlg() {}
     val pa2 = new PrintExpAlg2() {}
-
-    // We can call esa with exp1
-    val ev = exp1(esa)
-
-    // But calling ea with exp2 is an error
-    // val ev_bad = exp2(ea)
-
-    // Testing the actual algebras
-    println("Evaluation of exp1 \"" + exp1(pa).print() + "\" is: " + ev.eval())
-    println("Evaluation of exp2 \"" + exp2(pa).print() + "\" is: " + exp2(esa).eval())
-    println("The alternative pretty printer works nicely too!\nexp1: " + exp1(pa2) + "\nexp2: " + exp2(pa2))
+    val tt = pa2.sub(pa2.lit(5), pa2.lit(7)) + " = " + ea.sub(ea.lit(5), ea.lit(7)).eval()
+    print(tt)
   }
   def main(args: Array[String]) {
-
     test
   }
 }
