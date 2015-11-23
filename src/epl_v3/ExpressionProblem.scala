@@ -25,7 +25,7 @@ class Echo {
   }
 }
 
-//test
+//Test
 object ExpressionProblem { 
   def main(args: Array[String]) {
 
