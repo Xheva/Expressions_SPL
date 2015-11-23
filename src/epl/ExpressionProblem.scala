@@ -12,13 +12,11 @@ trait ExpAlg[E] {
 trait Echo {
   def print(): String
 }
-
 trait PrintExpAlg extends ExpAlg[Echo] {
   def lit(x: Int) = new Echo() {
     def print() = x.toString()
   }
 }
-
 // Evolution 1: Adding subtraction
 trait AddExpAlg[E] extends ExpAlg[E] {
   def add(e1: E, e2: E): E
@@ -30,12 +28,12 @@ trait SubExpAlg[E] extends ExpAlg[E] {
 // Updating evaluations:
 trait PrintAddExpAlg extends PrintExpAlg with AddExpAlg[Echo] {
   def add(e1: Echo, e2: Echo) = new Echo {
-    def print() = e1.print() + "+" + e2.print()
+    def print() = e1.print() + " + " + e2.print()
   }
 }
 trait PrintSubExpAlg extends PrintExpAlg with SubExpAlg[Echo] {
   def sub(e1: Echo, e2: Echo) = new Echo() {
-    def print() = e1.print() + "-" + e2.print()
+    def print() = e1.print() + " - " + e2.print()
   }
 }
 
@@ -48,11 +46,9 @@ trait EvalExpAlg extends SubExpAlg[Eval] with AddExpAlg[Eval] {
   def lit(x: Int) = new Eval() {
     def eval() = x
   }
-
   def add(e1: Eval, e2: Eval) = new Eval() {
     def eval() = e1.eval() +  e2.eval()
   }
-
   def sub(e1: Eval, e2: Eval) = new Eval() {
     def eval() = e1.eval() - e2.eval()
   }
@@ -70,10 +66,15 @@ trait PrintExpAlg2 extends SubExpAlg[String]{
 // Test
 object ExpressionProblem {
   def test(): Unit = {
+    class Core extends PrintSubExpAlg with PrintAddExpAlg
+
+    val pa = new Core
     val ea = new EvalExpAlg() {}
     val pa2 = new PrintExpAlg2() {}
-    val tt = pa2.sub(pa2.lit(5), pa2.lit(7)) + " = " + ea.sub(ea.lit(5), ea.lit(7)).eval()
-    print(tt)
+    val exp = pa.add(pa.lit(5), pa.lit(7)).print() + " = " + ea.add(ea.lit(5), ea.lit(7)).eval()
+    val exp2 = pa2.sub(pa2.lit(5), pa2.lit(7)) + " = " + ea.sub(ea.lit(5), ea.lit(7)).eval()
+    println(exp)
+    print(exp2)
   }
   def main(args: Array[String]) {
     test
