@@ -39,7 +39,7 @@ trait PrintSubExpAlg extends PrintExpAlg with SubExpAlg[Echo] {
   }
 }
 
-// Evolution 2: The evaluation interface
+// Evolution B: The evaluation interface
 trait Eval {
   def eval(): Int
 }
