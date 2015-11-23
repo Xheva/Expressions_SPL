@@ -7,6 +7,14 @@ package epl
 trait ExpAlg[E] {
   def lit(x: Int): E
 }
+// Evolution 1: Adding subtraction
+trait AddExpAlg[E] extends ExpAlg[E] {
+  def add(e1: E, e2: E): E
+}
+// Evolution 2: Adding adding
+trait SubExpAlg[E] extends ExpAlg[E] {
+  def sub(e1: E, e2: E): E
+}
 
 // Evolution A: Adding pretty printing
 trait Echo {
@@ -16,14 +24,6 @@ trait PrintExpAlg extends ExpAlg[Echo] {
   def lit(x: Int) = new Echo() {
     def print() = x.toString()
   }
-}
-// Evolution 1: Adding subtraction
-trait AddExpAlg[E] extends ExpAlg[E] {
-  def add(e1: E, e2: E): E
-}
-// Evolution 2: Adding adding
-trait SubExpAlg[E] extends ExpAlg[E] {
-  def sub(e1: E, e2: E): E
 }
 // Updating evaluations:
 trait PrintAddExpAlg extends PrintExpAlg with AddExpAlg[Echo] {
