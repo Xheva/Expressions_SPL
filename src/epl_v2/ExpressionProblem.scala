@@ -7,27 +7,28 @@ package epl_v2
 class Operations
 
 /*Base definition*/
+// VP_B
 trait ExpAlg {
-  type Opr <: Operations
+  type Opr <: Operations //VP_A
   def lit(x: Int): Opr
 }
 
-/* Extension 1*/
-trait PPrint extends Operations {
+/* Extension A1 */
+trait Echo extends Operations {
   def print(): String
 }
 
-/* Extension 2*/
+/* Extension A2 */
 trait Eval extends Operations {
   def eval(): Int
 }
 
-/* Extension 3*/
+/* Extension B1 */
 trait AddExpAlg extends ExpAlg {
   def add(e1: Opr, e2: Opr): Opr
 }
 
-/* Extension 4*/
+/* Extension B2 */
 trait SubExpAlg extends ExpAlg {
   def sub(e1: Opr, e2: Opr): Opr
 }
@@ -38,22 +39,22 @@ trait SubExpAlg extends ExpAlg {
  * Feature "Print" for "Lit"
  *  */
 trait PrintExpAlg extends ExpAlg {
-  type Opr = PPrint
-  def lit(x: Int) = new PPrint() {
+  type Opr = Echo
+  def lit(x: Int) = new Echo() {
     def print() = x.toString()
   }
 }
 
 /* Feature "Print" for "Add" */
 trait PrintAddExpAlg extends PrintExpAlg with AddExpAlg {
-  def add(e1: PPrint, e2: PPrint) = new PPrint() {
+  def add(e1: Echo, e2: Echo) = new Echo() {
     def print() = e1.print() + "+" + e2.print()
   }
 }
 
 /* Feature "Print" for "Sub" */
 trait PrintSubExpAlg extends PrintExpAlg with SubExpAlg {
-  def sub(e1: PPrint, e2: PPrint) = new PPrint() {
+  def sub(e1: Echo, e2: Echo) = new Echo() {
     def print() = e1.print() + "-" + e2.print()
   }
 }
@@ -82,7 +83,7 @@ trait EvalSubExpAlg extends EvalExpAlg with SubExpAlg {
   }
 }
 
-/* Mandatory features ("Lit" and "Print")  
+/* Mandatory features ("Lit" and "Print")
  * are shown as defaults in a "Base" type
  */
 trait Base extends PrintExpAlg
@@ -90,71 +91,14 @@ trait Base extends PrintExpAlg
 /* a test */
 object ExpressionProblem {
 
-  class PrintWithAdd extends PrintAddExpAlg
-  class PrintWithSub extends PrintSubExpAlg
-
-  class EvalWithAdd extends EvalAddExpAlg
-  class EvalWithSub extends EvalSubExpAlg
-
-  class Core extends Base
-  class EvalBase extends EvalExpAlg
-
-  val pwa = new PrintWithAdd
-  val pws = new PrintWithSub
-
-  val ewa = new EvalWithAdd
-  val ews = new EvalWithSub
-
-  val cr = new Core {
-    new PrintAddExpAlg {
-      val l = lit(5)
-      add(l, l).print()
-    }
-    
-    new PrintSubExpAlg {
-
-    }
-  }
-    
-  val eb = new EvalBase
-
- println(cr)
-  
-  //println(cr)
-
-  //else---------------------------
-  new PrintAddExpAlg {
-    add(pwa.lit(2), pwa.lit(8))
-  }
-
-  //else---------------------------
-  object Base extends Base
-  val in = Base lit 10 print ()
-
- // val basewithadd = new Core with PrintAddExpAlg -------------------------------
-  //println(basewithadd.add(basewithadd.lit(15), basewithadd.lit(15)).print())----
-
-  //else---------------------------
   class EvalAddExpAlgC extends EvalAddExpAlg with EvalSubExpAlg
-  class EvalSubExpAlgC extends EvalSubExpAlg
-
-  class PrintAddExpAlgC extends PrintAddExpAlg
-  class PrintSubExpAlgC extends PrintSubExpAlg
+  class PrintAddExpAlgC extends PrintAddExpAlg with PrintSubExpAlg
 
   def main(args: Array[String]) {
-
-    val eeac = new EvalAddExpAlgC
-
-    val l1 = eeac.lit(2)
-    val l2 = eeac.lit(3)
-
-    val e1 = eeac.lit(10)
-    val e2 = eeac.add(l1, l2).eval()
-    val e3 = eeac.sub(l1, l2).eval()
-    println(e1.eval())
-    println(e2)
-    println(e3)
-
+    val eval = new EvalAddExpAlgC
+    val echo = new PrintAddExpAlgC
+    val evalprintexp = echo.add(echo.lit(2), echo.lit(3)).print() + " = " + eval.add(eval.lit(2), eval.lit(3)).eval()
+    println(evalprintexp)
   }
 
 }
