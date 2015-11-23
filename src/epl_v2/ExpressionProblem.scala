@@ -60,8 +60,7 @@ trait PrintSubExpAlg extends PrintExpAlg with SubExpAlg {
 }
 
 /* Base implementation
- * Feature "Eval" for "Lit"
- *  */
+ * Feature "Eval" for "Lit" */
 trait EvalExpAlg extends ExpAlg {
   type Opr = Eval
   def lit(x: Int) = new Eval() {
