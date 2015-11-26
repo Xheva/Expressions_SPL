@@ -1,5 +1,5 @@
 ### Expressions SPL
 
-The Feature Model of <i>Expressions Product Line</i>:
+The implementation of the Expression Problem as an SPL. There are three versions which show the implementation of features by different variability realization techniques.  
 
-![EPL](https://github.com/Xheva/Expressions_SPL/blob/master/images/ExpressionsSPL.png)
+
